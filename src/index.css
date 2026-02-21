@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', 'Helvetica', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background-color: #5C1EA8;
+  color: #FAFAFA;
+  min-height: 100vh;
+}
+
+html {
+  background-color: #5C1EA8;
+  min-height: 100vh;
+}
+
+/* === NEO-BRUTALISMO CÓMIC === */
+
+/* Fondo dot-matrix estilo cómic */
+body {
+  background-color: #5C1EA8;
+  background-image: radial-gradient(circle, rgba(0,0,0,0.25) 1.5px, transparent 1.5px);
+  background-size: 18px 18px;
+}
+
+/* Tipografía cómic global */
+h1, h2, h3, .font-comic {
+  font-family: 'Impact', 'Arial Black', 'Haettenschweiler', sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Efecto press en botones - activo = baja sombra */
+.btn-brutal {
+  transition: transform 0.06s ease, box-shadow 0.06s ease;
+}
+.btn-brutal:active {
+  transform: translate(4px, 4px) !important;
+  box-shadow: 2px 2px 0px 0px #0D0D0D !important;
+}
+
+/* Contorno bold en texto de títulos grandes */
+.text-stroke {
+  -webkit-text-stroke: 2px #0D0D0D;
+  text-stroke: 2px #0D0D0D;
+}
+.text-stroke-sm {
+  -webkit-text-stroke: 1px #0D0D0D;
+  text-stroke: 1px #0D0D0D;
+}
+
+/* Animaciones */
+@keyframes fade-in-enhanced {
+  0%   { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes slide-in-enhanced {
+  0%   { transform: translateX(-20px); opacity: 0; }
+  100% { transform: translateX(0);      opacity: 1; }
+}
+@keyframes pulse-comic {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+
+.animate-fade-in  { animation: fade-in-enhanced  0.4s ease-out 1; }
+.animate-slide-in { animation: slide-in-enhanced 0.4s ease-out 1; }
+.animate-pulse-comic { animation: pulse-comic 0.9s steps(2, end) infinite; }
+
+/* Scrollbar brutalist */
+::-webkit-scrollbar       { width: 10px; }
+::-webkit-scrollbar-track { background: #3A0068; border-left: 3px solid #0D0D0D; }
+::-webkit-scrollbar-thumb { background: #FFDE03; border: 2px solid #0D0D0D; }
+
+/* ── MODO NOCHE ─────────────────────────────────────────────────────────── */
+body.night-mode {
+  background-color: #121212;
+  background-image: radial-gradient(circle, rgba(0,229,255,0.18) 1.5px, transparent 1.5px);
+  background-size: 18px 18px;
+  color: #E0E0E0;
+}
+body.night-mode ::-webkit-scrollbar-track { background: #0A0A0A; border-left: 3px solid #00E5FF; }
+body.night-mode ::-webkit-scrollbar-thumb { background: #00E5FF; border: 2px solid #0A0A0A; }
+::-webkit-scrollbar-thumb:hover { background: #FF5722; }
+
+/* Líneas de velocidad cómic (decorativas) */
+.speed-lines {
+  position: relative;
+}
+.speed-lines::before {
+  content: '';
+  position: absolute;
+  inset: -30px;
+  background: repeating-conic-gradient(
+    from 0deg at 50% 50%,
+    rgba(255,222,3,0.08) 0deg 5deg,
+    transparent 5deg 10deg
+  );
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Panel cómic - borde + sombra brutal */
+.comic-panel {
+  border: 4px solid #0D0D0D;
+  box-shadow: 8px 8px 0px 0px #0D0D0D;
+  background: #3A0068;
+}
+
