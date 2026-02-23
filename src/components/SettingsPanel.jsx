@@ -146,7 +146,7 @@ export default function SettingsPanel({ open, onClose }) {
             </h2>
             <p style={{
               fontSize: 10,
-              color: isNight ? '#00E5FF88' : '#FFDE0377',
+              color: isNight ? '#D4AF6A88' : '#FFDE0377',
               fontWeight: 700,
               letterSpacing: '0.12em',
               marginTop: 3,
@@ -192,7 +192,7 @@ export default function SettingsPanel({ open, onClose }) {
                 label={T.nightMode}
                 active={theme === 'night'}
                 onClick={() => theme !== 'night' && toggleTheme()}
-                accent="#00E5FF"
+                accent="#D4AF6A"
                 themeVars={themeVars}
               />
             </div>
@@ -210,7 +210,7 @@ export default function SettingsPanel({ open, onClose }) {
               <span style={{
                 fontFamily: 'Impact, Arial Black, sans-serif',
                 fontSize: 11,
-                color: isNight ? '#00E5FF' : '#FFDE03',
+                color: isNight ? '#D4AF6A' : '#FFDE03',
                 letterSpacing: '0.1em',
               }}>
                 {isNight ? (language === 'es' ? 'ACTIVO: MODO NOCHE' : 'ACTIVE: NIGHT MODE')

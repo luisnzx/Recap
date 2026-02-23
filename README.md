@@ -1,21 +1,21 @@
-# 🎙️ One-Click Recap
+# One-Click Recap
 
 Una aplicación moderna y elegante para convertir tus reuniones en acciones ejecutables. Graba, transcribe y procesa automáticamente tus conversaciones en tareas, acuerdos y próximas reuniones.
 
-## ✨ Características
+## Características
 
-- **🎤 Grabación en Tiempo Real**: Captura audio continuo usando Web Speech API
-- **📝 Transcripción Automática**: Convierte el audio a texto mientras hablas
-- **🤖 Procesamiento Inteligente**: Divide automáticamente el texto en:
-  - 📝 Tareas (To-Dos)
-  - 🤝 Acuerdos
-  - 🗓️ Próxima Reunión
-- **💾 Persistencia**: Guarda todas tus reuniones en localStorage
-- **🎨 Dark Mode**: Interfaz elegante con tema oscuro y acentos neón
-- **✨ Animaciones Fluidas**: Transiciones suaves para una mejor experiencia
-- **📱 Responsive**: Diseño adaptable para móvil, tablet y desktop
+- **Grabación en Tiempo Real**: Captura audio continuo usando Web Speech API
+- **Transcripción Automática**: Convierte el audio a texto mientras hablas
+- **Procesamiento Inteligente**: Divide automáticamente el texto en:
+  -  Tareas (To-Dos)
+  -  Acuerdos
+  -  Próxima Reunión
+- **Persistencia**: Guarda todas tus reuniones en localStorage
+- **Dark Mode**: Interfaz elegante con tema oscuro y acentos neón
+- **Animaciones Fluidas**: Transiciones suaves para una mejor experiencia
+- **Responsive**: Diseño adaptable para móvil, tablet y desktop
 
-## 🛠️ Tecnologías
+## Tecnologías
 
 - **React 18**: Framework frontend
 - **Vite**: Build tool rápido y moderno
@@ -23,7 +23,7 @@ Una aplicación moderna y elegante para convertir tus reuniones en acciones ejec
 - **Lucide React**: Iconografía moderna
 - **Web Speech API**: Reconocimiento de voz
 
-## 📦 Instalación
+##  Instalación
 
 ```bash
 # Clonar el repositorio
@@ -43,7 +43,7 @@ npm run build
 npm run preview
 ```
 
-## 🚀 Uso
+## Uso
 
 1. **Abre la aplicación** en tu navegador (recomendado: Chrome, Edge o Safari)
 2. **Presiona el botón circular azul** para comenzar a grabar
@@ -52,7 +52,7 @@ npm run preview
 5. **Revisa los resultados** organizados en tarjetas elegantes
 6. **Consulta el historial** de reuniones en la barra lateral
 
-## 🏗️ Estructura del Proyecto
+##  Estructura del Proyecto
 
 ```
 APP_REUNIONES/
@@ -74,7 +74,7 @@ APP_REUNIONES/
 └── package.json                     # Dependencias y scripts
 ```
 
-## 🎯 Componentes Principales
+## Componentes Principales
 
 ### App.jsx
 Orquesta la lógica principal:
@@ -103,7 +103,7 @@ Muestra resultados en tarjetas elegantes:
 - Animaciones de entrada escalonadas
 - Scroll en transcripción completa
 
-## 🎨 Personalización
+## Personalización
 
 ### Temas de Color
 Edita `tailwind.config.js` para cambiar los colores:
@@ -128,7 +128,7 @@ Personaliza las palabras clave en `MeetingProcessor.js`:
 const taskKeywords = ['hacer', 'tarea', 'acción', ...];
 ```
 
-## ⚙️ Configuración
+## Configuración
 
 ### localStorage
 - **Key**: `meetings`
@@ -145,7 +145,7 @@ const taskKeywords = ['hacer', 'tarea', 'acción', ...];
 }
 ```
 
-## 🔧 Desarrollo
+##  Desarrollo
 
 ### Scripts Disponibles
 
@@ -160,17 +160,17 @@ npm run preview  # Previsualiza el build de producción
 - Los datos de reuniones se guardan en localStorage
 - Limpia con: `localStorage.clear()`
 
-## 📱 Compatibilidad
+## Compatibilidad
 
 | Navegador | Compatible |
 |-----------|-----------|
-| Chrome    | ✅ Completo |
-| Edge      | ✅ Completo |
-| Safari    | ✅ Completo |
-| Firefox   | ⚠️ Limitado |
-| Safari iOS| ⚠️ Limitado |
+| Chrome    |  Completo |
+| Edge      |  Completo |
+| Safari    |  Completo |
+| Firefox   |  Limitado |
+| Safari iOS|  Limitado |
 
-## 🐛 Problemas Comunes
+##  Problemas Comunes
 
 ### "Tu navegador no soporta Web Speech API"
 - Usa Chrome, Edge o Safari
@@ -186,11 +186,11 @@ npm run preview  # Previsualiza el build de producción
 - Comprueba el almacenamiento disponible del navegador
 - Limpia el cache si hay problemas
 
-## 📝 Licencia
+##  Licencia
 
 MIT - Libre para usar, modificar y distribuir
 
-## 💡 Ideas Futuras
+##  Ideas Futuras
 
 - Exportar reuniones a PDF
 - Integración con calendario (Google Calendar, Outlook)
@@ -201,7 +201,7 @@ MIT - Libre para usar, modificar y distribuir
 - Sincronización en la nube
 - Colaboración en equipo
 
-## 🤝 Contribuir
+##  Contribuir
 
 Las contribuciones son bienvenidas. Por favor:
 
@@ -211,7 +211,7 @@ Las contribuciones son bienvenidas. Por favor:
 4. Push a la rama (`git push origin feature/mejora`)
 5. Abre un Pull Request
 
-## 📞 Soporte
+##  Soporte
 
 Para reportar bugs o sugerencias, abre una issue en el repositorio.
 

@@ -81,13 +81,14 @@ h1, h2, h3, .font-comic {
 
 /* ── MODO NOCHE ─────────────────────────────────────────────────────────── */
 body.night-mode {
-  background-color: #121212;
-  background-image: radial-gradient(circle, rgba(0,229,255,0.18) 1.5px, transparent 1.5px);
+  background-color: #111111;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
   background-size: 18px 18px;
-  color: #E0E0E0;
+  color: #D8D8D8;
 }
-body.night-mode ::-webkit-scrollbar-track { background: #0A0A0A; border-left: 3px solid #00E5FF; }
-body.night-mode ::-webkit-scrollbar-thumb { background: #00E5FF; border: 2px solid #0A0A0A; }
+body.night-mode ::-webkit-scrollbar-track { background: #0A0A0A; border-left: 3px solid #2A2A2A; }
+body.night-mode ::-webkit-scrollbar-thumb { background: #4A4A4A; border: 2px solid #0A0A0A; }
+body.night-mode ::-webkit-scrollbar-thumb:hover { background: #D4AF6A; }
 ::-webkit-scrollbar-thumb:hover { background: #FF5722; }
 
 /* Líneas de velocidad cómic (decorativas) */

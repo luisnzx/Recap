@@ -10,9 +10,12 @@ import { useSettings } from './context/SettingsContext';
 import { supabase } from './supabase';
 import SettingsPanel from './components/SettingsPanel';
 import UpgradeModal from './components/UpgradeModal';
+import UploadZone from './components/UploadZone';
 import { Mic, LogOut, Settings } from 'lucide-react';
 
 const FREE_LIMIT = 3;
+// Cuenta propietaria — acceso premium permanente sin límites
+const OWNER_EMAIL = 'luisnugent3@gmail.com';
 
 export default function App() {
   const { user, loading: authLoading, signOut } = useAuth();
@@ -31,12 +34,18 @@ export default function App() {
   const [sidebarOpen,     setSidebarOpen]     = useState(false);
   const [settingsOpen,    setSettingsOpen]    = useState(false);
   const [upgradeOpen,     setUpgradeOpen]     = useState(false);
+  const [activeTab,       setActiveTab]       = useState('record'); // 'record' | 'upload'
 
   // Contexto de ajustes
-  const { themeVars, T } = useSettings();
+  const { themeVars, T, language } = useSettings();
+  // Mantener ref del idioma para pasarlo a recognition sin re-montar el hook
+  const languageRef = useRef(language);
+  useEffect(() => { languageRef.current = language; }, [language]);
 
-  // Límite de plan gratuito
-  const limitReached = meetings.length >= FREE_LIMIT;
+  // Cuenta propietaria = premium permanente
+  const isPremium    = user?.email === OWNER_EMAIL;
+  // Límite de plan gratuito (nunca se activa para el propietario)
+  const limitReached = !isPremium && meetings.length >= FREE_LIMIT;
 
   // Referencias
   const recognitionRef = useRef(null);
@@ -55,7 +64,7 @@ export default function App() {
     const recognition = new SpeechRecognition();
     recognition.continuous = true;
     recognition.interimResults = true;
-    recognition.lang = 'es-ES';
+    recognition.lang = language === 'en' ? 'en-US' : 'es-ES';
     recognition.maxAlternatives = 1;
 
     recognition.onstart = () => {
@@ -162,7 +171,7 @@ export default function App() {
       
       // Procesar texto capturado
       if (interimTranscriptRef.current.trim()) {
-        const result = MeetingProcessor.processText(interimTranscriptRef.current);
+        const result = MeetingProcessor.processText(interimTranscriptRef.current, languageRef.current);
         setProcessed(result);
 
         // Verificar límite antes de guardar
@@ -205,13 +214,55 @@ export default function App() {
       }
       setIsRecording(false);
     } else {
-      // El usuario presionó grabar
+      // El usuario presionó grabar — actualizar idioma antes de empezar
+      if (recognitionRef.current) {
+        recognitionRef.current.lang = languageRef.current === 'en' ? 'en-US' : 'es-ES';
+      }
       userStoppedRef.current = false;
       interimTranscriptRef.current = '';
       setTranscript('');
       recognitionRef.current?.start();
       setIsRecording(true);
     }
+  };
+
+  // Manejar transcripción de archivo subido
+  const handleUploadTranscribed = async (text, originalFileName, detectedLang) => {
+    if (limitReached) { setUpgradeOpen(true); return; }
+    // Usar el idioma detectado en el audio (no el del toggle de UI)
+    const audioLang = detectedLang ?? language;
+    const result = MeetingProcessor.processText(text, audioLang);
+    // Sobreescribir el título con el nombre del archivo
+    result.title = originalFileName.replace(/\.[^.]+$/, '');
+    setProcessed(result);
+    setIsSaving(true);
+    const meetingData = MeetingProcessor.formatForStorage(result);
+    const { data: { user: currentUser } } = await supabase.auth.getUser();
+    const { data, error } = await supabase
+      .from('meetings')
+      .insert({
+        user_id:      currentUser.id,
+        title:        meetingData.title,
+        tasks:        meetingData.tasks,
+        agreements:   meetingData.agreements,
+        next_meeting: meetingData.nextMeeting,
+        raw_text:     meetingData.rawText,
+      })
+      .select()
+      .single();
+    setIsSaving(false);
+    if (!error) {
+      setMeetings(prev => [{
+        id:          data.id,
+        title:       data.title,
+        timestamp:   data.created_at,
+        tasks:       data.tasks ?? [],
+        agreements:  data.agreements ?? [],
+        nextMeeting: data.next_meeting ?? null,
+        rawText:     data.raw_text ?? '',
+      }, ...prev]);
+    }
+    setSelectedMeeting(null);
   };
 
   // Nueva sesión
@@ -441,15 +492,72 @@ export default function App() {
                 </div>
               </div>
             ) : !processed ? (
-              /* Estado: repo en blanco → solo botón */
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 400, gap: 24 }}>
-                <RecordingButton
-                  isRecording={isRecording}
-                  onToggle={toggleRecording}
-                  recognizing={recognizing}
-                  limitReached={limitReached}
-                  onLimitClick={() => { recognitionRef.current?.stop(); setIsRecording(false); setUpgradeOpen(true); }}
-                />
+              /* Estado: en blanco → tabs GRABAR / SUBIR */
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24 }}>
+
+                {/* ─ Tab switcher ─ */}
+                <div style={{ display: 'flex', border: '4px solid #0D0D0D', boxShadow: '4px 4px 0 #0D0D0D' }}>
+                  {[['record', T.tabRecord, '🎙'], ['upload', T.tabUpload, '📁']].map(([id, label, icon]) => (
+                    <button
+                      key={id}
+                      onClick={() => setActiveTab(id)}
+                      style={{
+                        padding: '14px 36px',
+                        background: activeTab === id ? '#FFDE03' : '#0D0D0D',
+                        border: 'none',
+                        borderRight: id === 'record' ? '4px solid #0D0D0D' : 'none',
+                        cursor: 'pointer',
+                        transition: 'background 0.1s',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      <span style={{
+                        display: 'inline-block',
+                        fontFamily: 'Impact, Arial Black, sans-serif',
+                        fontSize: 18, fontWeight: 900,
+                        color: activeTab === id ? '#0D0D0D' : '#FAFAFA',
+                        letterSpacing: '0.22em',
+                        wordSpacing: '0.4em',
+                        textTransform: 'uppercase',
+                        transform: 'scaleX(1.18)',
+                        transformOrigin: 'center',
+                        whiteSpace: 'nowrap',
+                      }}>{icon} {label}</span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* ─ Contenido del tab activo ─ */}
+                {activeTab === 'record' ? (
+                  <RecordingButton
+                    isRecording={isRecording}
+                    onToggle={toggleRecording}
+                    recognizing={recognizing}
+                    limitReached={limitReached}
+                    onLimitClick={() => { recognitionRef.current?.stop(); setIsRecording(false); setUpgradeOpen(true); }}
+                  />
+                ) : (
+                  <div style={{ width: '100%', maxWidth: 520 }}>
+                    <UploadZone
+                      onTranscribed={handleUploadTranscribed}
+                      disabled={limitReached}
+                    />
+                    {limitReached && (
+                      <p style={{
+                        marginTop: 10, textAlign: 'center', fontSize: 12,
+                        fontWeight: 700, color: '#E8003D',
+                        fontFamily: 'Impact, Arial Black, sans-serif',
+                        letterSpacing: '0.06em',
+                      }}>
+                        ⚡ {T.limitReached ?? 'PLAN LIMIT REACHED'} —{' '}
+                        <span style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                          onClick={() => setUpgradeOpen(true)}>
+                          UPGRADE
+                        </span>
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
             ) : (
               /* Resultados */
@@ -469,7 +577,12 @@ export default function App() {
                     GRABAR DE NUEVO
                   </button>
                 </div>
-                <ResultsDisplay processed={processed} />
+                <ResultsDisplay
+                  processed={processed}
+                  isPremium={isPremium}
+                  onUpgradeClick={() => setUpgradeOpen(true)}
+                  meetingTitle={processed?.title ?? 'reunion'}
+                />
               </>
             )}
           </div>

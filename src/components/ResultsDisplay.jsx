@@ -1,10 +1,23 @@
 import React from 'react';
-import { CheckCircle, Users, Calendar, Clipboard, Zap, Clock, User } from 'lucide-react';
+import { CheckCircle, Users, Calendar, Clipboard, Zap, Clock, User, Lock, Star } from 'lucide-react';
 import { useSettings } from '../context/SettingsContext';
 
-export default function ResultsDisplay({ processed }) {
+export default function ResultsDisplay({ processed, isPremium = false, onUpgradeClick, meetingTitle = 'reunion' }) {
   const { themeVars, T } = useSettings();
   if (!processed) return null;
+
+  // ── Export handlers (dynamic import keeps initial bundle light) ──────────────
+  const handleExportPDF = async () => {
+    if (!isPremium) { onUpgradeClick?.(); return; }
+    const { exportToPDF } = await import('../exportUtils.js');
+    exportToPDF(processed, meetingTitle);
+  };
+
+  const handleExportExcel = async () => {
+    if (!isPremium) { onUpgradeClick?.(); return; }
+    const { exportToExcel } = await import('../exportUtils.js');
+    exportToExcel(processed, meetingTitle);
+  };
 
   const panel = {
     border: `4px solid ${themeVars.panelBorder}`,
@@ -161,6 +174,107 @@ export default function ResultsDisplay({ processed }) {
           </div>
         </div>
       )}
+
+      {/* ── Export panel ── */}
+      <div style={{ ...panel }}>
+        <div style={panelHeader('#0D0D0D', '#FFDE03')}>
+          <Star style={{ width: 18, height: 18 }} />
+          {T.exportTitle}
+          {!isPremium && (
+            <span style={{
+              marginLeft: 'auto',
+              background: '#FFD700',
+              color: '#0D0D0D',
+              fontSize: 11,
+              padding: '2px 10px',
+              border: '2px solid #0D0D0D',
+              fontFamily: 'Impact, Arial Black, sans-serif',
+              letterSpacing: '0.06em',
+            }}>
+              ⭐ {T.exportPremiumOnly}
+            </span>
+          )}
+        </div>
+
+        <div style={{ padding: '16px 18px', display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          {/* PDF button */}
+          <button
+            onClick={handleExportPDF}
+            title={!isPremium ? T.exportPremiumHint : T.exportPDF}
+            style={{
+              flex: '1 1 calc(50% - 6px)',
+              minWidth: 180,
+              background: '#E8003D',
+              color: '#FAFAFA',
+              border: '3px solid #0D0D0D',
+              boxShadow: '5px 5px 0 #0D0D0D',
+              padding: '12px 14px',
+              fontFamily: 'Impact, Arial Black, sans-serif',
+              fontSize: 14,
+              fontWeight: 900,
+              letterSpacing: '0.04em',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              opacity: isPremium ? 1 : 0.82,
+              transition: 'transform 0.08s, box-shadow 0.08s',
+            }}
+            onMouseDown={e => { e.currentTarget.style.transform = 'translate(3px,3px)'; e.currentTarget.style.boxShadow = '2px 2px 0 #0D0D0D'; }}
+            onMouseUp={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '5px 5px 0 #0D0D0D'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '5px 5px 0 #0D0D0D'; }}
+          >
+            {!isPremium && <Lock style={{ width: 15, height: 15, color: '#FFD700', flexShrink: 0 }} />}
+            {T.exportPDF}
+          </button>
+
+          {/* Excel button */}
+          <button
+            onClick={handleExportExcel}
+            title={!isPremium ? T.exportPremiumHint : T.exportExcel}
+            style={{
+              flex: '1 1 calc(50% - 6px)',
+              minWidth: 180,
+              background: '#00C853',
+              color: '#0D0D0D',
+              border: '3px solid #0D0D0D',
+              boxShadow: '5px 5px 0 #0D0D0D',
+              padding: '12px 14px',
+              fontFamily: 'Impact, Arial Black, sans-serif',
+              fontSize: 14,
+              fontWeight: 900,
+              letterSpacing: '0.04em',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              opacity: isPremium ? 1 : 0.82,
+              transition: 'transform 0.08s, box-shadow 0.08s',
+            }}
+            onMouseDown={e => { e.currentTarget.style.transform = 'translate(3px,3px)'; e.currentTarget.style.boxShadow = '2px 2px 0 #0D0D0D'; }}
+            onMouseUp={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '5px 5px 0 #0D0D0D'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '5px 5px 0 #0D0D0D'; }}
+          >
+            {!isPremium && <Lock style={{ width: 15, height: 15, color: '#FFD700', flexShrink: 0 }} />}
+            {T.exportExcel}
+          </button>
+        </div>
+
+        {!isPremium && (
+          <p style={{
+            margin: 0,
+            padding: '0 18px 14px',
+            fontSize: 11,
+            color: themeVars.textMuted,
+            fontStyle: 'italic',
+            textAlign: 'center',
+          }}>
+            🔒 {T.exportPremiumHint}
+          </p>
+        )}
+      </div>
 
       {/* Full transcript */}
       <div style={{ ...panel, boxShadow: `6px 6px 0 ${themeVars.shadow}` }}>
