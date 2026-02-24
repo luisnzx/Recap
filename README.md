@@ -1,7 +1,7 @@
 # One-Click Recap
 
 Una aplicación moderna y elegante para convertir tus reuniones en acciones ejecutables. Graba, transcribe y procesa automáticamente tus conversaciones en tareas, acuerdos y próximas reuniones.
-##Acceso
+## Acceso
 https://recap-dusky.vercel.app/
 ## Características
 
