@@ -218,4 +218,4 @@ Para reportar bugs o sugerencias, abre una issue en el repositorio.
 
 ---
 
-Hecho con ❤️ para mejorar la productividad en reuniones.
+Hecho con para mejorar la productividad en reuniones.
